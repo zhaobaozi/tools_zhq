@@ -1,5 +1,5 @@
 #coding=utf-8
- 
+import google.protobuf.text_format
 import os.path as osp
 import sys
 import copy
@@ -7,8 +7,10 @@ import os
 from sys import path
 import numpy as np
 import google.protobuf as pb
- 
-path.append('/Users/kkwang/work/caffe/python/')
+import sys
+sys.path.append("/home/ubuntu/lhb/py-R-FCN1/caffe/python")
+sys.path.append("/home/ubuntu/lhb/py-R-FCN1/caffe/python/caffe")
+sys.path.append("/home/ubuntu/lhb/py-R-FCN1/lib")
 import argparse
  
 import caffe
@@ -19,25 +21,25 @@ layer_type = ['Convolution', 'InnerProduct']
 bnn_type = ['BatchNorm', 'Scale']
 temp_file = './temp.prototxt'
 EPS = 1e-6
-
+ 
 def parse_args():
     """Parse input arguments."""
     parser = argparse.ArgumentParser(description='convert prototxt to prototxt without batch normalization')
     parser.add_argument('--model', dest='caffe_config_filename',
                         help='prototxt file',
-                        default="./models/deploy_68_new.prototxt", 
+                        default="/home/ubuntu/lhb/py-R-FCN1/models/pascal_voc/ResNet-50/rfcn_end2end/test_agnostic_bf.prototxt", 
                         type=str)
     parser.add_argument('--weights', dest='caffe_weights_filename',
                         help='weights file',
-                        default="./models/vgg_68_new.caffemodel", 
+                        default="/home/ubuntu/lhb/py-R-FCN1/output_finetuning2/rfcn_end2end/voc_0712_trainval/_iter_220000.caffemodel", 
                         type=str)
     parser.add_argument('--merged-model',dest='caffe_without_bn_config_filename',
                         help='mobile config file',
-                        default="./models/result.prototxt",
+                        default="result.prototxt",
                         type=str)
     parser.add_argument('--merged-weights',dest='caffe_without_bn_weight_filename',
                         help='mobile weights file',
-                        default="./models/result.caffemodel",
+                        default="result.caffemodel",
                         type=str)
  
     #if len(sys.argv) == 1:
@@ -66,7 +68,7 @@ class ConvertBnn:
         i = 0
         while i < length:
             print i
-             
+            print layer_params[i].type
             if layer_params[i].type in layer_type:
                 if (i + 2 < length) and layer_params[i + 1].type == bnn_type[0] and  \
                     layer_params[i + 2].type == bnn_type[1]:
@@ -169,7 +171,7 @@ class ConvertBnn:
                 b = self.net_model.params[param_layers[i+2].name][1].data
                 for k in xrange(channels):
                     self.dest_model.params[param_layers[i].name][0].data[k] = self.net_model.params[param_layers[i].name][0].data[k] * a[k] / std[k]
-                    self.dest_model.params[param_layers[i].name][1].data[k] = self.dest_model.params[param_layers[i].name][1].data[k] * a[k] / std[k] - a[k] * mean[k] / std[k] + b[k] 
+                    self.dest_model.params[param_layers[i].name][1].data[k] = self.dest_model.params[param_layers[i].name][1].data[k] * a[k] / std[k] - a[k] * mean[k] / std[k] + b[k]
             elif param_layers[i].type == 'Scale':
                 channels = self.net_model.params[param_layers[i-1].name][0].num
                 scale = self.net_model.params[param_layers[i-1].name][2].data[0]
@@ -187,10 +189,13 @@ class ConvertBnn:
         with open(self.dest_dir, 'w') as f:
             f.write(str(self.dest_param))
         os.remove(temp_file)
+        net1 = caffe.Net('result.prototxt',
+                         'result.caffemodel',
+                         caffe.TEST)
+        net1.save('result_1.caffemodel')
         print 'MERGED SUCCEED!'
  
 if __name__ == '__main__':
     args = parse_args()
     cb = ConvertBnn(args.caffe_config_filename,args.caffe_weights_filename,args.caffe_without_bn_config_filename,args.caffe_without_bn_weight_filename)
     cb.convert()
-
