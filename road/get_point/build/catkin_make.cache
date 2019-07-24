@@ -1,0 +1,2 @@
+
+-DCATKIN_DEVEL_PREFIX=/home/zhaohuaqing/Documents/do_some_try/road/get_point/devel -DCMAKE_INSTALL_PREFIX=/home/zhaohuaqing/Documents/do_some_try/road/get_point/install -G Unix Makefiles

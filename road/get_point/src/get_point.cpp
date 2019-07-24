@@ -58,24 +58,26 @@ int main(int argc, char **argv)
 	pcl::PointXYZ min;//用于存放三个轴的最小值
 	pcl::PointXYZ max;//用于存放三个轴的最大值
 	pcl::getMinMax3D(*cloud,min,max);
+	//std::cout<<"min:"<<min<<std::endl;
+	//std::cout<<"max:"<<max<<std::endl;
 	double grid_size_x=0.05;
 	double grid_size_y=0.05;//栅栏化5cm
-	int column=int((max.y-min.y)/grid_size_y);
-	int row=int((max.x-min.x)/grid_size_x);
-	Grid grid[column][row];
+	int row=int((max.y-min.y)/grid_size_y);
+	int column=int((max.x-min.x)/grid_size_x);
+	Grid grid[row][column];
 	int j=0;
 	int i=0;
 	cv::Mat src_gray;
-	src_gray = cv::Mat::zeros(column, row, CV_64F);
+	src_gray = cv::Mat::zeros(row, column, CV_64F);
 	for (int m=0;m<cloud->size();m++)
 	{
-		for( i=0;i<column;i++)
+		for( i=0;i<row;i++)
 		{
-			if ((((cloud->points[m].x-min.x)>=i*grid_size_x)&&((cloud->points[m].x-min.x)<=i*grid_size_x+grid_size_x)))//如果x在某范围内
+			if ((((cloud->points[m].y-min.y)>=i*grid_size_y)&&((cloud->points[m].y-min.y)<=i*grid_size_y+grid_size_y)))//如果x在某范围内
 			{
-				for( j=0;j<row;j++)
+				for( j=0;j<column;j++)
 				{
-					if(((cloud->points[m].y-min.y)>=j*grid_size_y)&&((cloud->points[m].y-min.y)<=j*grid_size_y+grid_size_y))//如果y在某范围内
+					if(((cloud->points[m].x-min.x)>=j*grid_size_x)&&((cloud->points[m].x-min.x)<=j*grid_size_x+grid_size_x))//如果y在某范围内
 					{   
 						grid[i][j].num=grid[i][j].num+1;
 						grid[i][j].h_mean=int((grid[i][j].h_mean+(cloud->points[m].z-min.z)/(max.z-min.z)*255)/grid[i][j].num);

@@ -13,12 +13,14 @@ if __name__ == '__main__':
 		            help='You can adjust it yourself')
 	parser.add_argument('--mask_threshold', type=int, required=True,
 		            help='You can adjust it yourself')
+	parser.add_argument('--median_kernel', type=int, required=True,
+		            help='You can adjust it yourself')
 	args = parser.parse_args()
 	img = cv2.imread(args.img_path,0)#原图
 	kernel = np.ones((11,11),np.uint8)
 	kernel2 = np.ones((3,3),np.uint8)
 	img_close = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel2)#闭运算填补空洞小点
-	img_median = cv2.medianBlur(img_close, 5)#中值滤波
+	img_median = cv2.medianBlur(img_close, args.median_kernel)#中值滤波
 	cv2.imwrite("./result/img_median.jpg",img_median)
 
 	x = cv2.Sobel(img_median,cv2.CV_16S,1,0)#scharr求梯度提取梯度线
