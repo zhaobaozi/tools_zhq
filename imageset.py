@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
+import random
 if __name__ == '__main__':
-    path = '/home/zhaohuaqing/Downloads/tl_ssd'
+    path = '/home/zhaohuaqing/py/py-R-FCN1/data/VOCdevkit0712/VOC0712/718'
     dataAnnotated = os.listdir(path + '/Annotations')
+    random.shuffle(dataAnnotated)
     dataNum = len(dataAnnotated)
-
+ 
     ftest = open('ImageSets/Main/test.txt', 'w')
     ftrain = open('ImageSets/Main/train.txt', 'w')
     ftrainval = open('ImageSets/Main/trainval.txt', 'w') 
