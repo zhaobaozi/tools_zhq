@@ -68,7 +68,8 @@ int main(int argc, char **argv)
 	int j=0;
 	int i=0;
 	cv::Mat src_gray;
-	src_gray = cv::Mat::zeros(row, column, CV_64F);
+	src_gray = cv::Mat::zeros(row, column, CV_64FC1);
+  //std::cout<<"channel:"<<src_gray.channels()<<std::endl;
 	for (int m=0;m<cloud->size();m++)
 	{
 		for( i=0;i<row;i++)
@@ -80,7 +81,7 @@ int main(int argc, char **argv)
 					if(((cloud->points[m].x-min.x)>=j*grid_size_x)&&((cloud->points[m].x-min.x)<=j*grid_size_x+grid_size_x))//如果y在某范围内
 					{   
 						grid[i][j].num=grid[i][j].num+1;
-						grid[i][j].h_mean=int((grid[i][j].h_mean+(cloud->points[m].z-min.z)/(max.z-min.z)*255)/grid[i][j].num);
+						grid[i][j].h_mean=int((grid[i][j].h_mean*(grid[i][j].num-1)+(cloud->points[m].z-min.z)/(max.z-min.z)*255)/grid[i][j].num);
 						src_gray.at<double>(i,j)=grid[i][j].h_mean;
 						pcl::PointXYZ tmp_new;
 						tmp_new.x=cloud->points[m].x;
