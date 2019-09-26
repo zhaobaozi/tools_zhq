@@ -3,14 +3,14 @@ import xml.dom.minidom
 import os
 import cv2
  
-_TXT_PATH= '/home/zhaohuaqing/Documents/baidu/smalllabelsxml/'
-_IMAGE_PATH= '/home/zhaohuaqing/Documents/baidu/smallimages1/'
+_TXT_PATH= '/home/zhq/cowa_zhq1/dataset/COWA/trafficlights/normal_2/small/label_new2/'
+_IMAGE_PATH= '/home/zhq/cowa_zhq1/dataset/COWA/trafficlights/normal_2/small/image_new/'
  
 _INDENT= ''*4
 _NEW_LINE= '\n'
-_FOLDER_NODE= 'baidu'
+_FOLDER_NODE= 'cowa'
 _ROOT_NODE= 'annotation'
-_DATABASE_NAME= 'baidu'
+_DATABASE_NAME= 'cowa'
 _ANNOTATION= 'PASCAL VOC2007'
 _AUTHOR= 'zhq'
 _SEGMENTED= '0'

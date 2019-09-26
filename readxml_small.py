@@ -140,7 +140,7 @@ if __name__=='__main__':
 					re_y2 = y2 - y1_new
 					if re_y2 >= h_new: re_y2 = h_new
 					imgcrop = img[y1_new:y2_new, x1_new:x2_new]
-					images_name_path1=image_see+imgname[:-4]+'-' + str(j)+'.jpg'
+					images_name_path1=image_new+imgname[:-4]+'-' + str(j)+'.jpg'
 					cv2.imwrite(images_name_path1, imgcrop, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
 					cv2.rectangle(imgcrop, (re_x1,re_y1), (re_x2, re_y2), (0, 255, 0), 1)
 					cv2.putText(imgcrop, classname, (re_x1, re_y1), cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0),thickness=2)
